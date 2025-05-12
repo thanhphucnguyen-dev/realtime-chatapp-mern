@@ -9,11 +9,12 @@ import { Box } from '@mui/material'
 const RootStyle = styled('div')(() => ({
   flexGrow: 1,
   height: '100%',
-  overflow: 'scroll'
+  // overflow: 'scroll'
 }))
 
 const SimpleBarStyle = styled(SimpleBarReact)(({ theme }) => ({
-  // maxHeight: '100%',
+  maxHeight: '100%',
+  overflowX: 'hidden',
   '& .simplebar-scrollbar': {
     '&:before': {
       backgroundColor: alpha(theme.palette.grey[600], 0.48)
