@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Box, IconButton, Divider, Avatar, Stack } from '@mui/material'
+import { Box, IconButton, Divider, Avatar, Stack, Menu, MenuItem } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { Gear } from 'phosphor-react'
 
-
+import { Profile_Menu } from '../../data'
 import AntSwitch from '../../components/AntSwitch'
 import { Nav_Buttons } from '../../data'
 import useSettings from '../../hooks/useSettings'
@@ -16,6 +16,15 @@ const SideBar = () => {
   const theme = useTheme()
   // console.log(theme)
   const { onToggleMode } = useSettings()
+
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
 
   return (
     <Box
@@ -87,7 +96,47 @@ const SideBar = () => {
             checked={theme.palette.mode === 'light'}
           />
           {/* <Avatar src={faker.image.avatar()}/> */}
-          <Avatar src={faker.image.url({ width: 200, height: 200 })}/>
+          <Avatar
+            id='basic-button'
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+            src={faker.image.url({ width: 200, height: 200 })}/>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button'
+            }}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right'
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left'
+            }}
+          >
+            <Stack spacing={1} px={1}>
+              {Profile_Menu.map((el, idx) => (
+                <MenuItem key={idx} onClick={handleClose} >
+                  <Stack
+                    direction='row'
+                    alignItems='center'
+                    justifyContent='space-between'
+                    sx={{ width: 100 }}
+                  >
+                    <span>{el.title}</span>
+                    {el.icon}
+                  </Stack>
+                </MenuItem>
+              ))}
+            </Stack>
+          </Menu>
+
         </Stack>
 
       </Stack>
