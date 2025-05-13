@@ -21,7 +21,7 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
       color: '#fff',
       '& + .MuiSwitch-track': {
         opacity: 1,
-        backgroundColor: theme.palette.primary.main
+        backgroundColor: theme.palette.mode === 'dark' ? '#177ddc' : '#1890ff' // Sử dụng theme.palette.mode để kiểm tra chế độ
       }
     }
   },
@@ -40,7 +40,7 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
     backgroundColor:
       theme.palette.mode === 'dark'
         ? 'rgba(255,255,255,.35)'
-        : 'rgba(0,0,0,.25)',
+        : 'rgba(0,0,0,.25)', // Thay đổi màu track theo chế độ sáng/tối
     boxSizing: 'border-box'
   }
 }))
