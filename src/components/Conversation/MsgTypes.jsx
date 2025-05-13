@@ -1,6 +1,17 @@
-import { Stack, Divider, Typography, Box, Link, IconButton } from '@mui/material'
+import { useState } from 'react'
+import { Stack, Divider, Typography, Box, Link, IconButton, Menu, MenuItem } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { DownloadSimple, Image } from 'phosphor-react'
+import { DotsThreeVertical, DownloadSimple, Image } from 'phosphor-react'
+import { Message_options } from '../../data'
+
+const getMessageBoxStyle = (incoming, theme) => ({
+  backgroundColor: incoming
+    ? theme.palette.background.default
+    : theme.palette.primary.main,
+  borderRadius: 1.5, // 1.5*8=12px
+  width: 'max-content'
+})
+
 
 const DocMsg = ({ el }) => {
   const theme = useTheme()
@@ -9,13 +20,7 @@ const DocMsg = ({ el }) => {
     <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
       <Box
         p={1.5}
-        sx={{
-          backgroundColor: el.incoming
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
-          borderRadius: 1.5, // 1.5*8=12px
-          width: 'max-content'
-        }}
+        sx={getMessageBoxStyle(el.incoming, theme)}
       >
         <Stack spacing={2}>
           <Stack
@@ -40,10 +45,10 @@ const DocMsg = ({ el }) => {
           >{el.message}</Typography>
         </Stack>
       </Box>
+      <MessageOptions />
     </Stack>
   )
 }
-
 
 const LinkMsg = ({ el }) => {
   const theme = useTheme()
@@ -52,13 +57,7 @@ const LinkMsg = ({ el }) => {
     <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
       <Box
         p={1.5}
-        sx={{
-          backgroundColor: el.incoming
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
-          borderRadius: 1.5, // 1.5*8=12px
-          width: 'max-content'
-        }}
+        sx={getMessageBoxStyle(el.incoming, theme)}
       >
         <Stack spacing={2}>
           <Stack
@@ -88,6 +87,7 @@ const LinkMsg = ({ el }) => {
           </Stack>
         </Stack>
       </Box>
+      <MessageOptions />
     </Stack>
   )
 }
@@ -99,13 +99,7 @@ const ReplyMsg = ({ el }) => {
     <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
       <Box
         p={1.5}
-        sx={{
-          backgroundColor: el.incoming
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
-          borderRadius: 1.5, // 1.5*8=12px
-          width: 'max-content'
-        }}
+        sx={getMessageBoxStyle(el.incoming, theme)}
       >
         <Stack spacing={2}>
           <Stack
@@ -127,6 +121,7 @@ const ReplyMsg = ({ el }) => {
           </Typography>
         </Stack>
       </Box>
+      <MessageOptions />
     </Stack>
   )
 }
@@ -138,13 +133,7 @@ const MediaMsg = ({ el }) => {
     <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
       <Box
         p={1.5}
-        sx={{
-          backgroundColor: el.incoming
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
-          borderRadius: 1.5, // 1.5*8=12px
-          width: 'max-content'
-        }}
+        sx={getMessageBoxStyle(el.incoming, theme)}
       >
         <Stack spacing={1}>
           <img src={el.img} alt={el.message} style={{ maxHeight: 210, borderRadius: '10px' }} />
@@ -153,6 +142,7 @@ const MediaMsg = ({ el }) => {
           </Typography>
         </Stack>
       </Box>
+      <MessageOptions />
     </Stack>
   )
 }
@@ -163,13 +153,7 @@ const TextMsg = ({ el }) => {
     <Stack direction='row' justifyContent={el.incoming ? 'start' : 'end'}>
       <Box
         p={1.5}
-        sx={{
-          backgroundColor: el.incoming
-            ? theme.palette.background.default
-            : theme.palette.primary.main,
-          borderRadius: 1.5, // 1.5*8=12px
-          width: 'max-content'
-        }}
+        sx={getMessageBoxStyle(el.incoming, theme)}
       >
         <Typography
           variant='body2'
@@ -178,6 +162,9 @@ const TextMsg = ({ el }) => {
           {el.message}
         </Typography>
       </Box>
+
+      {/*  */}
+      <MessageOptions />
     </Stack>
   )
 }
@@ -198,6 +185,44 @@ const TimeLine = ({ el }) => {
       </Typography>
       <Divider width='46%' />
     </Stack>
+  )
+}
+
+const MessageOptions = () => {
+  const [anchorEl, setAnchorEl] = useState(null)
+  const open = Boolean(anchorEl)
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+  return (
+    <>
+      <DotsThreeVertical
+        id="basic-button"
+        aria-controls={open ? 'basic-menu' : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? 'true' : undefined}
+        onClick={handleClick}
+        size={20}
+      />
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button'
+        }}
+      >
+        <Stack spacing={1} px={1}>
+          {Message_options.map((el, index) => (
+            <MenuItem key={index} onClick={handleClose} >{el.title}</MenuItem>
+          ))}
+        </Stack>
+      </Menu>
+    </>
   )
 }
 
