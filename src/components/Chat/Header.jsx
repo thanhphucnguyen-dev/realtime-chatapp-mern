@@ -110,11 +110,11 @@ const ChatHeader = () => {
               }}
               variant="dot"
             >
-              <Avatar alt={faker.name.fullName()} src={faker.image.avatar()} />
+              <Avatar alt={faker.person.fullName()} src={faker.image.avatar()} />
             </StyledBadge>
           </Box>
           <Stack spacing={0.2}>
-            <Typography variant="subtitle2">{faker.name.fullName()}</Typography>
+            <Typography variant="subtitle2">{faker.person.fullName()}</Typography>
             <Typography variant="caption">Online</Typography>
           </Stack>
         </Stack>
