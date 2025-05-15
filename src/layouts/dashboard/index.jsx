@@ -9,6 +9,7 @@ const DashboardLayout = () => {
     <Stack direction='row'>
       {/* SideBar */}
       <SideBar />
+      {/* Nội dung trang */}
       <Outlet />
     </Stack>
   )

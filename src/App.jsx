@@ -3,17 +3,13 @@ import './App.css'
 import DashboardLayout from './layouts/dashboard'
 import GeneralApp from './pages/dashboard/GeneralApp'
 import { Box } from '@mui/material'
+import Router from './routes'
 
 function App() {
 
   return (
     <Box sx={{ display: 'flex' }}>
-      <Box>
-        <DashboardLayout />
-      </Box>
-      <Box>
-        <GeneralApp />
-      </Box>
+      <Router />
     </Box>
 
   )

@@ -7,6 +7,13 @@ export default defineConfig({
   base: './',
   resolve: {
     alias: [{ find: '~', replacement: '/src' }]
+  },
+  server: {
+    port: 5173,
+    open: true,
+    fs: {
+      strict: false
+    },
+    historyApiFallback: true
   }
 })
-
