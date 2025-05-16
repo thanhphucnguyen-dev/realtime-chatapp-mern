@@ -21,6 +21,7 @@ export default function RHFTextField({ name, helperText, ...other }) {
         <TextField
           {...field}
           fullWidth
+          variant='outlined'
           error={!!error}
           helperText={error ? error.message : helperText}
           {...other}
