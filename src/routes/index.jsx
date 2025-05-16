@@ -3,12 +3,13 @@ import { Navigate, useRoutes } from 'react-router-dom'
 
 // layouts
 import DashboardLayout from '../layouts/dashboard'
+import MainLayout from '../layouts/main'
 
 // config
 import { DEFAULT_PATH } from '../config'
 import LoadingScreen from '../components/LoadingScreen'
 
-const Loadable = (Component) => (props) => {
+const Loadable = ( Component ) => (props) => {
   return (
     <Suspense fallback={<LoadingScreen />}>
       <Component {...props} />
@@ -18,6 +19,16 @@ const Loadable = (Component) => (props) => {
 
 export default function Router() {
   return useRoutes([
+    {
+      path: '/auth',
+      element: <MainLayout />,
+      children: [
+        { path: 'login', element: <LoginPage /> },
+        { path: 'register', element: <RegisterPage /> },
+        { path: 'reset-password', element: <ResetPasswordPage /> },
+        { path: 'new-password', element: <NewPasswordPage /> }
+      ]
+    },
     {
       path: '/',
       element: <DashboardLayout />,
@@ -36,6 +47,15 @@ export default function Router() {
 
 const GeneralApp = Loadable(
   lazy(() => import('../pages/dashboard/GeneralApp'))
+)
+
+const LoginPage = Loadable(lazy(() => import('../pages/auth/Login')))
+const RegisterPage = Loadable(lazy(() => import('../pages/auth/Register')))
+const ResetPasswordPage = Loadable(
+  lazy(() => import('../pages/auth/ResetPassword'))
+)
+const NewPasswordPage = Loadable(
+  lazy(() => import('../pages/auth/NewPassword'))
 )
 
 const Settings = Loadable(
