@@ -9,6 +9,7 @@ import MainLayout from '../layouts/main'
 import { DEFAULT_PATH } from '../config'
 import LoadingScreen from '../components/LoadingScreen'
 
+// eslint-disable-next-line no-unused-vars
 const Loadable = ( Component ) => (props) => {
   return (
     <Suspense fallback={<LoadingScreen />}>
@@ -36,7 +37,8 @@ export default function Router() {
         { element: <Navigate to={DEFAULT_PATH} replace />, index: true },
         { path: 'app', element: <GeneralApp /> },
         { path: 'settings', element: <Settings /> },
-
+        { path: 'group', element: <GroupPage /> },
+        { path: 'call', element: <CallPage /> },
         { path: '404', element: <Page404 /> },
         { path: '*', element: <Navigate to="/404" replace /> }
       ]
@@ -45,21 +47,17 @@ export default function Router() {
   ])
 }
 
-const GeneralApp = Loadable(
-  lazy(() => import('../pages/dashboard/GeneralApp'))
-)
+const GeneralApp = Loadable( lazy(() => import('../pages/dashboard/GeneralApp')) )
 
-const LoginPage = Loadable(lazy(() => import('../pages/auth/Login')))
-const RegisterPage = Loadable(lazy(() => import('../pages/auth/Register')))
-const ResetPasswordPage = Loadable(
-  lazy(() => import('../pages/auth/ResetPassword'))
-)
-const NewPasswordPage = Loadable(
-  lazy(() => import('../pages/auth/NewPassword'))
-)
+const LoginPage = Loadable( lazy(() => import('../pages/auth/Login')) )
+const RegisterPage = Loadable( lazy(() => import('../pages/auth/Register')) )
+const ResetPasswordPage = Loadable( lazy(() => import('../pages/auth/ResetPassword')) )
+const NewPasswordPage = Loadable( lazy(() => import('../pages/auth/NewPassword')) )
 
-const Settings = Loadable(
-  lazy(() => import('../pages/dashboard/Settings'))
-)
+
+const GroupPage = Loadable(lazy(() => import('../pages/dashboard/Group')))
+const CallPage = Loadable(lazy(() => import('../pages/dashboard/Call')) )
+
+const Settings = Loadable( lazy(() => import('../pages/dashboard/Settings')) )
 
 const Page404 = Loadable(lazy(() => import('../pages/Page404')))
