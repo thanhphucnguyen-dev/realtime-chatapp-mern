@@ -7,7 +7,7 @@ import {
   Link,
   Divider
 } from '@mui/material'
-import { MagnifyingGlass, Plus } from 'phosphor-react'
+import { MagnifyingGlass, Phone } from 'phosphor-react'
 import { useTheme } from '@mui/material/styles'
 import { SimpleBarStyle } from '../../components/Scrollbar'
 
@@ -70,7 +70,7 @@ const Call = () => {
             <Stack direction='row' justifyContent='space-between' alignItems='center'>
               <Typography variant='subtitle2' component={Link}> Start Conversation </Typography>
               <IconButton onClick={handleOpenDialog} >
-                <Plus style={{ color: theme.palette.primary.main }} />
+                <Phone style={{ color: theme.palette.primary.main }} />
               </IconButton>
             </Stack>
             <Divider />

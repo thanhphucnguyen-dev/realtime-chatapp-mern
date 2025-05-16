@@ -9,11 +9,42 @@ import { Nav_Buttons } from '../../data'
 import useSettings from '../../hooks/useSettings'
 import { faker } from '@faker-js/faker'
 import Logo from '../../assets/images/logo.ico'
+import { useNavigate } from 'react-router-dom'
+
+const getPath = (index) => {
+  switch (index) {
+  case 0:
+    return '/app'
+  case 1:
+    return '/group'
+  case 2:
+    return '/call'
+  case 3:
+    return '/settings'
+  default:
+    break
+  }
+}
+
+const getMenuPath = (index) => {
+  switch (index) {
+  case 0:
+    return '/profile'
+  case 1:
+    return '/settings'
+  case 2:
+    // TODO => Update token & set isAuth = false
+    return '/auth/login'
+  default:
+    break
+  }
+}
 
 const SideBar = () => {
 
-  const [selected, setSelected] = useState(0)
   const theme = useTheme()
+  const navigate = useNavigate()
+  const [selected, setSelected] = useState(0)
   // console.log(theme)
   const { onToggleMode } = useSettings()
 
@@ -21,6 +52,7 @@ const SideBar = () => {
   const open = Boolean(anchorEl)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
+
   }
   const handleClose = () => {
     setAnchorEl(null)
@@ -60,7 +92,10 @@ const SideBar = () => {
                 )
                 :(
                   <IconButton
-                    onClick={() => setSelected(el.index)}
+                    onClick={() => {
+                      setSelected(el.index)
+                      navigate( getPath(el.index) )
+                    }}
                     sx={{ width: 'max-content', color: theme.palette.mode === 'light' ? '#000' : theme.palette.text.primary }}
                     key={el.index}
                   >
@@ -79,7 +114,10 @@ const SideBar = () => {
               )
               : (
                 <IconButton
-                  onClick={() => setSelected(3)}
+                  onClick={() => {
+                    navigate( getPath(3) )
+                    setSelected(3)
+                  }}
                   sx={{ width: 'max-content', color: theme.palette.mode === 'light' ? '#000' : theme.palette.text.primary }}
                 >
                   <Gear />
@@ -122,8 +160,16 @@ const SideBar = () => {
           >
             <Stack spacing={1} px={1}>
               {Profile_Menu.map((el, idx) => (
-                <MenuItem key={idx} onClick={handleClose} >
+                <MenuItem
+                  key={idx}
+                  onClick={() => {
+                    handleClick()
+                  }}
+                >
                   <Stack
+                    onClick={() => {
+                      navigate( getMenuPath(idx) )
+                    }}
                     direction='row'
                     alignItems='center'
                     justifyContent='space-between'
