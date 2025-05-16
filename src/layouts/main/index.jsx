@@ -1,5 +1,5 @@
 import { Container, Stack } from '@mui/material'
-import { Outlet } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 
 import Logo from '../../assets/images/logo.ico'
 
@@ -21,7 +21,7 @@ const glowEffect = () => ({
   }
   50% {
     box-shadow: 0 0 40px 20px rgba(130, 94, 240, 0.6);
-    transform: scale(1.1); /* phóng to nhẹ */
+    transform: scale(1.1); 
     opacity: 1;
   }
   100% {
@@ -33,8 +33,15 @@ const glowEffect = () => ({
   `
 })
 
+const isAuthenticated = true
 const MainLayout = () => {
+
   const { logoStyle, keyframes } = glowEffect()
+
+  if (!isAuthenticated) {
+    return <Navigate to='/app' />
+  }
+
   return (
     <>
       <Container sx={{ mt: 5 }} maxWidth='sm'>

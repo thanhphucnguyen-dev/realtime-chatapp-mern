@@ -40,10 +40,7 @@ const Group = () => {
 
   return (
     <>
-      <Stack
-        direction='row'
-        sx={{ width: '100%' }}
-      >
+      <Stack direction='row' sx={{ width: '100%' }} >
         {/* Left */}
         <Box
           sx={{
