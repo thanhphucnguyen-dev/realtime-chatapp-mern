@@ -1,0 +1,55 @@
+{
+  "name": "chat-server",
+  "version": "1.0.0",
+  "description": "Realtime chat server",
+  "author": "ThanhPhucNguyen",
+  "main": "src/server.js",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=18.x"
+  },
+  "scripts": {
+    "lint": "eslint src --ext js --report-unused-disable-directives --max-warnings 0",
+    "clean": "rmdir /s /q build && mkdir build",
+    "build-babel": "babel ./src -d ./build/src",
+    "build": "npm run clean && npm run build-babel",
+    "production": "npm run build && cross-env BUILD_MODE=production node ./build/src/server.js",
+    "dev": "cross-env BUILD_MODE=development nodemon --exec babel-node ./src/server.js"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.27.1",
+    "@sendgrid/mail": "^7.7.0",
+    "async-exit-hook": "^2.0.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.1",
+    "cookie-parser": "^1.4.6",
+    "cookie-session": "^2.0.0",
+    "cors": "^2.8.5",
+    "cross-env": "7.0.3",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^6.7.0",
+    "helmet": "^6.0.1",
+    "jsonwebtoken": "^9.0.0",
+    "mongodb": "^6.16.0",
+    "mongoose": "^6.9.0",
+    "morgan": "^1.10.0",
+    "otp-generator": "^4.0.0",
+    "socket.io": "^4.6.0",
+    "xss-clean": "^0.1.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.27.2",
+    "@babel/core": "^7.27.1",
+    "@babel/eslint-parser": "^7.27.1",
+    "@babel/node": "^7.27.1",
+    "@babel/plugin-transform-runtime": "^7.27.1",
+    "@babel/preset-env": "^7.27.2",
+    "babel-plugin-module-resolver": "^5.0.2",
+    "eslint": "^9.27.0",
+    "nodemon": "3.0.1"
+  }
+}
