@@ -130,10 +130,23 @@ const Contact = () => {
             spacing={3}
             sx={{
               height: '100%',
-              p: 2
+              p: 1
             }}
           >
-            <Typography variant='subtitle2'>Contact Info</Typography>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                fontWeight: 'bold',
+                color: 'primary.main',
+                fontSize: '1.2rem',
+                letterSpacing: 1.5,
+                background: 'linear-gradient(to right, #4facfe, #00f2fe)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}
+            >
+              Contact Info
+            </Typography>
             <IconButton onClick={() => {
               dispatch(ToggleSidebar())
             }}>
@@ -192,13 +205,13 @@ const Contact = () => {
 
           <Divider />
           <Stack spacing={0.5}>
-            <Typography variant='article'> About </Typography>
+            <Typography variant='article' > About </Typography>
             <Typography variant='body2'>Imagination is the only limit </Typography>
           </Stack>
           <Divider />
 
           <Stack direction='row' alignItems='center' justifyContent='space-between'>
-            <Typography>Media, Links & Docs </Typography>
+            <Typography >Media, Links & Docs </Typography>
             <Button
               onClick={() => { dispatch(UpdateSidebarType('SHARED')) }}
               endIcon={ <CaretRight />}>
@@ -210,8 +223,8 @@ const Contact = () => {
             {[1, 2, 3].map((el, index) => (
               <Box key={index}>
                 <img
-                  src={faker.image.food()}
-                  alt={faker.name.fullName()}
+                  src={faker.image.urlLoremFlickr({ category: 'cat' })}
+                  alt={faker.person.fullName()}
                   style={{ width: 100, height: 100 }}
                 />
               </Box>
