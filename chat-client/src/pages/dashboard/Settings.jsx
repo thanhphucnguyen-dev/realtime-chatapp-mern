@@ -115,14 +115,32 @@ const Settings = () => {
         >
           <Stack p={4} spacing={5}>
             {/* Header */}
-            <Stack direction='row' alignItems='center' spacing={3}>
+            <Stack
+              direction='row'
+              alignItems='center'
+              justifyContent='space-between'
+              sx={{ px: 2 }}
+            >
               <IconButton>
                 <CaretLeft size={24} color='#4B4B4B' />
               </IconButton>
-              <Typography variant='h5'>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 'bold',
+                  color: 'primary.main',
+                  textTransform: 'uppercase',
+                  letterSpacing: 1.5,
+                  background: 'linear-gradient(to right, #4facfe, #00f2fe)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}
+              >
                 Settings
               </Typography>
             </Stack>
+
+
             {/* Profile */}
             <Stack direction='row' spacing={3}>
               <Avatar src={faker.image.avatarGitHub()} alt={faker.person.fullName()} sx={{ width: 56, height: 56 }} />

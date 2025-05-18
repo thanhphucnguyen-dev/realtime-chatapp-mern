@@ -17,23 +17,23 @@ const Message = ({ menu }) => {
     }
 
     if (el.type === 'msg') {
-      const props = { key: index, el, menu }
+      const props = { el, menu }
       switch (el.subtype) {
       case 'img':
         // img msg
-        return <MediaMsg {...props} />
+        return <MediaMsg key={index} {...props} />
       case 'doc':
         // doc msg
-        return <DocMsg {...props} />
+        return <DocMsg key={index} {...props} />
       case 'link':
         // Link msg
-        return <LinkMsg {...props} />
+        return <LinkMsg key={index} {...props} />
       case 'reply':
         // reply msg
-        return <ReplyMsg {...props} />
+        return <ReplyMsg key={index} {...props} />
       default:
         // text msg
-        return <TextMsg {...props} />
+        return <TextMsg key={index} {...props} />
       }
     }
 
@@ -51,42 +51,3 @@ const Message = ({ menu }) => {
 
 export default Message
 
-// const Message = ({ menu }) => {
-//   return (
-//     <Box p={3} >
-//       <Stack spacing={3}>
-//         {Chat_History.map((el, index) => {
-//           const key = index
-
-//           switch (el.type) {
-//           case 'divider':
-//             return <TimeLine key={key} el={el} />
-
-//           case 'msg':
-//             switch (el.subtype) {
-//             case 'img':
-//               // img msg
-//               return <MediaMsg key={key} el={el} menu={menu} />
-//             case 'doc':
-//               // doc msg
-//               return <DocMsg key={key} el={el} menu={menu} />
-//             case 'link':
-//               // Link msg
-//               return <LinkMsg key={key} el={el} menu={menu} />
-//             case 'reply':
-//               // reply msg
-//               return <ReplyMsg key={key} el={el} menu={menu} />
-//             default:
-//               // text msg
-//               return <TextMsg key={key} el={el} menu={menu} />
-//             }
-
-//           default:
-//             return <Fragment key={key} />
-//           }
-//         })}
-//       </Stack>
-
-//     </Box>
-//   )
-// }
