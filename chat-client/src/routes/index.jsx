@@ -2,12 +2,12 @@ import { Suspense, lazy } from 'react'
 import { Navigate, useRoutes } from 'react-router-dom'
 
 // layouts
-import DashboardLayout from '../layouts/dashboard'
-import MainLayout from '../layouts/main'
+import DashboardLayout from '~/layouts/dashboard'
+import MainLayout from '~/layouts/main'
 
 // config
-import { DEFAULT_PATH } from '../config'
-import LoadingScreen from '../components/LoadingScreen'
+import { DEFAULT_PATH } from '~/config'
+import LoadingScreen from '~/components/LoadingScreen'
 
 // eslint-disable-next-line no-unused-vars
 const Loadable = ( Component ) => (props) => {

@@ -9,16 +9,16 @@ import {
 } from '@mui/material'
 import { MagnifyingGlass, Phone, PhoneCall } from 'phosphor-react'
 import { useTheme } from '@mui/material/styles'
-import { SimpleBarStyle } from '../../components/Scrollbar'
+import { SimpleBarStyle } from '~/components/Scrollbar'
 
 import {
   Search,
   SearchIconWrapper,
   StyledInputBase
-} from '../../components/Search'
-import { CallLogElement } from '../../components/CallElement'
-import { CallLogs } from '../../data'
-import StartCall from '../../sections/main/StartCall'
+} from '~/components/Search'
+import { CallLogElement } from '~/components/CallElement'
+import { CallLogs } from '~/data'
+import StartCall from '~/sections/main/StartCall'
 
 
 const Call = () => {

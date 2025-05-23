@@ -8,7 +8,7 @@ import { Stack, Alert, Button, IconButton, InputAdornment } from '@mui/material'
 
 // Components
 import { Eye, EyeSlash } from 'phosphor-react'
-import FormProvider, { RHFTextField } from '../../components/hook-form'
+import FormProvider, { RHFTextField } from '~/components/hook-form'
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false)

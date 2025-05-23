@@ -1,7 +1,7 @@
 import { Container, Stack } from '@mui/material'
 import { Navigate, Outlet } from 'react-router-dom'
 
-import Logo from '../../assets/images/logo.ico'
+import Logo from '~/assets/images/logo.ico'
 
 const glowEffect = () => ({
   logoStyle: {

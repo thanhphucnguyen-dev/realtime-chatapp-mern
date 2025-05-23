@@ -2,11 +2,12 @@ import { useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles'
 import { Stack, Box } from '@mui/material'
 
-import Chats from './Chats'
-import Conversation from '../../components/Conversation'
-import Contact from '../../components/Contact'
-import SharedMessages from '../../components/SharedMessages'
-import StarredMessages from '../../components/StarredMessages'
+import Chats from '~/pages/dashboard/Chats'
+import Conversation from '~/components/Conversation'
+import Contact from '~/components/Contact'
+import SharedMessages from '~/components/SharedMessages'
+import StarredMessages from '~/components/StarredMessages'
+
 
 const renderSidebarContent = (type) => {
   switch (type) {

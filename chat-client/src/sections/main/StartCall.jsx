@@ -15,10 +15,10 @@ import {
   Search,
   SearchIconWrapper,
   StyledInputBase
-} from '../../components/Search'
-import { CallElement } from '../../components/CallElement'
+} from '~/components/Search'
+import { CallElement } from '~/components/CallElement'
 import { MagnifyingGlass } from 'phosphor-react'
-import { CallLogs } from '../../data'
+import { CallLogs } from '~/data'
 
 // Slide transition component
 const Transition = React.forwardRef(function Transition(props, ref) {

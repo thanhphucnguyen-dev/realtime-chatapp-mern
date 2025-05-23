@@ -1,8 +1,8 @@
 import { Link as RouterLink } from 'react-router-dom'
 // sections
 import { Stack, Typography, Link } from '@mui/material'
-import AuthSocial from '../../sections/auth/AuthSocial'
-import LoginForm from '../../sections/auth/LoginForm'
+import AuthSocial from '~/sections/auth/AuthSocial'
+import LoginForm from '~/sections/auth/LoginForm'
 
 // ----------------------------------------------------------------------
 const LoginPage = () => {

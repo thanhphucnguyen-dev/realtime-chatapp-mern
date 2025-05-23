@@ -10,7 +10,7 @@ import { Stack, Alert, Button, IconButton, InputAdornment, Link } from '@mui/mat
 
 // Components
 import { Eye, EyeSlash } from 'phosphor-react'
-import FormProvider, { RHFTextField } from '../../components/hook-form'
+import FormProvider, { RHFTextField } from '~/components/hook-form'
 
 // ------------------------------------------------------------------------
 const NewPasswordForm = () => {

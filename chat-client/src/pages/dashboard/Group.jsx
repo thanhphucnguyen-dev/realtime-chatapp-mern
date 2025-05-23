@@ -9,15 +9,15 @@ import {
 } from '@mui/material'
 import { MagnifyingGlass, Plus, UsersThree } from 'phosphor-react'
 import { useTheme } from '@mui/material/styles'
-import { SimpleBarStyle } from '../../components/Scrollbar'
-import { ChatList } from '../../data'
-import ChatElement from '../../components/ChatElement'
+import { SimpleBarStyle } from '~/components/Scrollbar'
+import { ChatList } from '~/data'
+import ChatElement from '~/components/ChatElement'
 import {
   Search,
   SearchIconWrapper,
   StyledInputBase
-} from '../../components/Search'
-import CreateGroup from '../../sections/main/CreateGroup'
+} from '~/components/Search'
+import CreateGroup from '~/sections/main/CreateGroup'
 
 const ChatSection = ({ title, chats }) => (
   <>

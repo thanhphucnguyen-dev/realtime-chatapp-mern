@@ -13,9 +13,9 @@ import {
 
 import { yupResolver } from '@hookform/resolvers/yup'
 import { useForm } from 'react-hook-form'
-import FormProvider from '../../components/hook-form/FormProvider'
-import { RHFTextField } from '../../components/hook-form'
-import RHFAutocomplete from '../../components/hook-form/RHFAutocomplete'
+import FormProvider from '~/components/hook-form/FormProvider'
+import { RHFTextField } from '~/components/hook-form'
+import RHFAutocomplete from '~/components/hook-form/RHFAutocomplete'
 
 const TAGS_OPTION = [
   'Toy Story 3',
