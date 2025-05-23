@@ -1,6 +1,6 @@
 import { IconButton, Stack, Typography, Box } from '@mui/material'
 import { CaretLeft } from 'phosphor-react'
-import ProfileForm from '../../sections/settings/ProfileForm'
+import ProfileForm from '~/sections/settings/ProfileForm'
 
 const Profile = () => {
   return (

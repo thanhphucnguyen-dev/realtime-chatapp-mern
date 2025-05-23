@@ -12,14 +12,14 @@ import {
   MagnifyingGlass
 } from 'phosphor-react'
 import { useTheme } from '@mui/material/styles'
-import { ChatList } from '../../data'
-import SimpleBarStyle from '../../components/Scrollbar'
+import { ChatList } from '~/data'
+import SimpleBarStyle from '~/components/Scrollbar'
 import {
   Search,
   SearchIconWrapper,
   StyledInputBase
-} from '../../components/Search'
-import ChatElement from '../../components/ChatElement'
+} from '~/components/Search'
+import ChatElement from '~/components/ChatElement'
 
 const Chats = () => {
   const theme = useTheme()

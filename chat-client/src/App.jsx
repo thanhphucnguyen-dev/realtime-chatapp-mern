@@ -1,9 +1,6 @@
-
-import './App.css'
-import DashboardLayout from './layouts/dashboard'
-import GeneralApp from './pages/dashboard/GeneralApp'
+import '~/App.css'
 import { Box } from '@mui/material'
-import Router from './routes'
+import Router from '~/routes'
 
 function App() {
 

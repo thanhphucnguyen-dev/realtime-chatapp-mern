@@ -3,12 +3,11 @@ import { Box, IconButton, Divider, Avatar, Stack, Menu, MenuItem } from '@mui/ma
 import { useTheme } from '@mui/material/styles'
 import { Gear } from 'phosphor-react'
 
-import { Profile_Menu } from '../../data'
-import AntSwitch from '../../components/AntSwitch'
-import { Nav_Buttons } from '../../data'
-import useSettings from '../../hooks/useSettings'
+import { Profile_Menu, Nav_Buttons } from '~/data'
+import AntSwitch from '~/components/AntSwitch'
+import useSettings from '~/hooks/useSettings'
 import { faker } from '@faker-js/faker'
-import Logo from '../../assets/images/logo.ico'
+import Logo from '~/assets/images/logo.ico'
 import { useNavigate } from 'react-router-dom'
 
 const getPath = (index) => {

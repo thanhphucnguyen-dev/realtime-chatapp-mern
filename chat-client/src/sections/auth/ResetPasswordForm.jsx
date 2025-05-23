@@ -7,7 +7,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { Stack, Alert, Button } from '@mui/material'
 
 // Components
-import FormProvider, { RHFTextField } from '../../components/hook-form'
+import FormProvider, { RHFTextField } from '~/components/hook-form'
 
 // ------------------------------------------------------------------------
 const ResetPasswordForm = () => {

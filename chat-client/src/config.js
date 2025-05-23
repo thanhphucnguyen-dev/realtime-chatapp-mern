@@ -2,7 +2,7 @@
 import { enUS, frFR, zhCN, viVN, arSD } from '@mui/material/locale'
 
 // routes
-import { PATH_DASHBOARD } from './routes/paths'
+import { PATH_DASHBOARD } from '~/routes/paths'
 
 export const defaultSettings = {
   themeMode: 'light',

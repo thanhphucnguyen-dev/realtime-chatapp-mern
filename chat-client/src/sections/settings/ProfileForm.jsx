@@ -4,8 +4,8 @@ import * as Yup from 'yup'
 // form
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import FormProvider from '../../components/hook-form/FormProvider'
-import RHFTextField from '../../components/hook-form/RHFTextField'
+import FormProvider from '~/components/hook-form'
+import RHFTextField from '~/components/hook-form/RHFTextField'
 import { Button, Stack } from '@mui/material'
 
 // ------------------------------------------------------------------------
