@@ -1,26 +1,19 @@
 import express from 'express' // web framework for Node.js
-
 import morgan from 'morgan' // HTTP request logger middleware for node.js
-
 import rateLimit from 'express-rate-limit' // rate limiter middleware
-
 import helmet from 'helmet' // secure your Express apps with various HTTP headers middleware
-
 import mongoSanitize from 'express-mongo-sanitize' // middleware to sanitize request input
-
 import bodyParser from 'body-parser' // body parser middleware
-
 import xss from 'xss-clean' // Node.js Connect middleware to sanitize user input coming from POST body, GET queries, and url params.
-
 import cors from 'cors' // enable CORS
-
 import cookieParser from 'cookie-parser' // cookie parser middleware
-
 import mongoose from 'mongoose' // MongoDB object modeling tool
-
 import dotenv from 'dotenv' // dotenv configuration
 
+import routes from './routes/index' // routes for our application
+
 dotenv.config() // configure dotenv at the beginning of the project
+
 
 // -----------------------------------------------------------------------------
 
@@ -54,6 +47,8 @@ const limiter = rateLimit({
 })
 
 app.use('/zenya', limiter)
+
+app.use(routes)
 
 
 export default app
