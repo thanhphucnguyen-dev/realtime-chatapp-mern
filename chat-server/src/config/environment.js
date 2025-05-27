@@ -5,5 +5,6 @@ export const env = {
   MONGODB_DB_NAME: process.env.MONGODB_DB_NAME,
   APP_HOST: process.env.APP_HOST || 'localhost',
   APP_PORT: process.env.APP_PORT || 8000,
-  AUTHOR: process.env.AUTHOR
+  AUTHOR: process.env.AUTHOR,
+  SG_KEY: process.env.SG_KEY
 }
