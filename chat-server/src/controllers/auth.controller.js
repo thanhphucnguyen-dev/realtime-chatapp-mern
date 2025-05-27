@@ -1,14 +1,19 @@
 import jwt from 'jsonwebtoken'
 import otpGenerator from 'otp-generator'
+import crypto from 'crypto'
 
 import User from '~/models/user.model'
 import filterObj from '~/utils/FilterObj'
+import { promisify } from 'util'
 
 
 const signToken = (userId) => jwt.sign({ userId }, process.env.JWT_SECRET)
 
+// Signup => register - sendOTP - verifyOTP
+// https://api.zenya.com/auth/register
+
 // Register New User
-exports.register = async (req, res, next) => {
+export const register = async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body
 
   const filteredBody = filterObj(req.body, 'firstName', 'lastName', 'password', 'email')
@@ -46,7 +51,7 @@ exports.register = async (req, res, next) => {
 }
 
 // Send OTP
-export const sendOTP = async (req, res, next) => {
+export const sendOTP = async (req, res) => {
   const { userId } = req
   const new_otp = otpGenerator.generate(6, {
     lowerCaseAlphabets: false,
@@ -68,7 +73,8 @@ export const sendOTP = async (req, res, next) => {
   })
 }
 
-export const verifyOTP = async (req, res, next) => {
+// verifyOTP
+export const verifyOTP = async (req, res) => {
   // Verify OTP and update user record accordingly
   const { email, otp } = req.body
 
@@ -109,7 +115,7 @@ export const verifyOTP = async (req, res, next) => {
 
 
 // Login User
-export const login = async (req, res, next) => {
+export const login = async (req, res) => {
   const { email, password } = req.body
 
   if ( !email || !password ) {
@@ -138,10 +144,122 @@ export const login = async (req, res, next) => {
 
 }
 
-export const forgotPassword = async (req, res, next) => {
-//
+// protect
+export const protect = async (req, res, next) => {
+  //1) Getting token (JWT) and check if it's there
+  let token
+  // 'Bear kajkkaulieqjki8199100101'
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    token = req.headers.authorization.split(' ')[1]
+
+
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt
+  } else {
+    req.status(400).json({
+      status: 'error',
+      message: 'You are not logged In! Please login to get access.'
+    })
+    return
+  }
+
+  // 2) Verification of token
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
+
+  // 3) Check if user still exist
+  const this_user = await User.findById(decoded.userId)
+
+  if (!this_user) {
+    res.status(400).json({
+      status: 'error',
+      message: 'The user dosen\'t exist.'
+    })
+  }
+
+  // 4) check if user changed their password after token was issued
+  if (this_user.changedPasswordAfter(decoded.iat)) {
+    res.status(400).json({
+      status: 'error',
+      message: 'User recently updated password! Please log in again.'
+    })
+  }
+
+  //
+  req.user = this_user
+  next()
 }
 
-export const resetPassword = async (req, res, next) => {
-//
+// Types of routes => Protected (Only logged in users an access these) & Unprotected
+
+// forgotPassword
+export const forgotPassword = async (req, res) => {
+  // 1) Get users email
+  const user = await User.findOne({ email: req.body.email })
+  if (!user) {
+    res.status(400).json({
+      status: 'error',
+      message: 'There is no user with given email address.'
+    })
+    return
+  }
+
+  // 2) Generate the random reset token
+  const resetToken = user.createPasswordResetToken()
+  const resetURL = `https://zenya.com/auth/reset-password?code=${resetToken}`
+  try {
+    // TODO => Send Email With Reset URL
+    res.status(200).json({
+      status: 'success',
+      message: 'Reset Password link sent to Email!'
+    })
+  } catch (error) {
+    user.passwordResetToken = undefined
+    user.passwordResetExpires = undefined
+
+    await user.save({ validateBeforeSave: false })
+
+    res.status(500).json({
+      status: 'error',
+      message: 'There was an error sending the email, Please try again later.'
+    })
+
+  }
+}
+
+// resetPassword
+export const resetPassword = async (req, res) => {
+  //1) Get user based on  token
+  const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() }
+  })
+
+  // 2) If token has expired or submission is out of time window
+  if (!user) {
+    res.status(400).json({
+      status: 'error',
+      message: 'Token is Invalid or Expired.'
+    })
+    return
+  }
+
+  // 3) Update users password and set resetToken & expiry to undifine
+  user.password = req.body.password
+  user.passwordConfirm = req.body.passwordConfirm
+  user.passwordResetToken = undefined
+  user.passwordResetExpires = undefined
+
+  await user.save()
+
+  // 4) Log in the user and Send new JWT
+  //TODO => Send an email to user informing about password
+
+  const token = signToken(user._id)
+  res.status(200).json({
+    status: 'success',
+    message: 'Password reseted successfully!',
+    token
+  })
 }

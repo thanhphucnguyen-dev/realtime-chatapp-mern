@@ -10,12 +10,6 @@ process.on('uncaughtException', (err) => {
   process.exit(1)
 })
 
-//------------------------------------------------------------------------------
-
-
-// -----------------------------------------------------------------------------
-
-
 let server = null
 const START_SERVER = () => {
   const HOSTNAME = process.env.APP_HOST
