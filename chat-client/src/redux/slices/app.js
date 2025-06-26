@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-
 const initialState = {
   sidebar: {
     open: false,
@@ -25,15 +24,15 @@ const slice = createSlice({
 // Reducer
 export default slice.reducer
 
-// ✅ Định nghĩa thunk action
+// Định nghĩa thunk action
 export function ToggleSidebar() {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch(slice.actions.toggleSidebar())
   }
 }
 
 export function UpdateSidebarType(type) {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     dispatch(slice.actions.updateSidebarType({ type }))
   }
 }

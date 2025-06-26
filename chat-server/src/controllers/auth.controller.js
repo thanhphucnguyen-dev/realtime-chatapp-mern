@@ -5,7 +5,6 @@ import crypto from 'crypto'
 
 import filterObj from '~/utils/FilterObj'
 
-// import { sendEmail as mailService } from '~/services/mailer'
 
 // Model
 import User from '~/models/user.model'
