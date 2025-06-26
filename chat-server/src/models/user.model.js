@@ -1,5 +1,4 @@
-import bcryptjs from 'bcryptjs'
-import bcrypt from 'bcryptjs/dist/bcrypt'
+import bcrypt from 'bcryptjs'
 import mongoose from 'mongoose'
 import crypto from 'crypto'
 
@@ -12,13 +11,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Last Name is required.']
   },
+  about: {
+    type: String
+  },
   avatar: {
     type: String
   },
   email: {
     type: String,
     required: [true, 'Email is required.'],
-    unique: true,
     validate: {
       validator: function (email) {
         return String(email)
@@ -46,7 +47,8 @@ const userSchema = new mongoose.Schema({
     type: Date
   },
   createdAt: {
-    type: Date
+    type: Date,
+    default: Date.now()
   },
   updatedAt: {
     type: Date
@@ -56,7 +58,7 @@ const userSchema = new mongoose.Schema({
     default: false
   },
   otp:{
-    type: Number
+    type: String
   },
   otp_expiry_time:{
     type: Date
@@ -64,20 +66,18 @@ const userSchema = new mongoose.Schema({
 })
 
 userSchema.pre('save', async function (next) {
-  // Only run this fxn if OTP is actually modified
-  if (!this.isModified('otp')) return next()
+  // 1. Hash OTP nếu được sửa
+  if (this.isModified('otp') && this.otp) {
+    this.otp = await bcrypt.hash(this.otp.toString(), 12)
+    console.log(this.otp.toString(), 'FROM PRE SAVE HOOK (OTP)')
+  }
 
-  // Hash the OTP with the cost of 12
-  this.otp = await bcryptjs.hash(this.otp, 12)
-  next()
-})
+  // 2. Hash password nếu được sửa
+  if (this.isModified('password') && this.password) {
+    this.password = await bcrypt.hash(this.password, 12)
+    this.passwordChangedAt = Date.now() - 1000
+  }
 
-userSchema.pre('save', async function (next) {
-  // Only run this fxn if OTP is actually modified
-  if (!this.isModified('password')) return next()
-
-  // Hash the OTP with the cost of 12
-  this.password = await bcryptjs.hash(this.password, 12)
   next()
 })
 
@@ -109,9 +109,9 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken
 }
 
-userSchema.methods.changedPasswordAfter = function (timestamp) {
-  return timestamp < this.passwordChangedAt
-}
+// userSchema.methods.changedPasswordAfter = function (timestamp) {
+//   return timestamp < this.passwordChangedAt
+// }
 
 const User = new mongoose.model('User', userSchema)
 export default User

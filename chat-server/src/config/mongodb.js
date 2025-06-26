@@ -1,32 +1,41 @@
+/* eslint-disable no-console */
+import mongoose from 'mongoose'
 import { env } from './environment'
-import { MongoClient, ServerApiVersion } from 'mongodb'
 
-let chatappDatabaseInstance = null
-
-// Create MongoDB client instance
-const mongoClientInstance = new MongoClient(env.MONGODB_URI, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true
-  }
-})
-
+let dbInstance = null
+mongoose.set('strictQuery', true)
 
 // Connect to MongoDB
 export const CONNECT_DB = async () => {
-  await mongoClientInstance.connect()
-  chatappDatabaseInstance = mongoClientInstance.db(env.MONGODB_DB_NAME)
+  try {
+    await mongoose.connect(env.MONGODB_URI, {
+      dbName: env.MONGODB_DB_NAME,
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    })
+    dbInstance = mongoose.connection.db
+    console.log('Mongoose connected to MongoDB')
+
+  } catch (error) {
+    console.log('Mongoose connection error: ', error)
+    throw error
+  }
 }
 
 export const GET_DB = () => {
-  if (!chatappDatabaseInstance) {
+  if (!dbInstance) {
     throw new Error('Must connect to Database first!')
   }
-  return chatappDatabaseInstance
+  return dbInstance
 }
 
 /* Close connection to database when needed */
 export const CLOSE_DB = async () => {
-  await mongoClientInstance.close()
+  try {
+    await mongoose.connection.close()
+    console.log('Mongoose connection closed.')
+  } catch (error) {
+    console.error('Error closing Mongoose connection: ', error)
+
+  }
 }

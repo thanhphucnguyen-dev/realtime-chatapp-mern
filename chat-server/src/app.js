@@ -7,7 +7,6 @@ import bodyParser from 'body-parser' // body parser middleware
 import xss from 'xss-clean' // Node.js Connect middleware to sanitize user input coming from POST body, GET queries, and url params.
 import cors from 'cors' // enable CORS
 import cookieParser from 'cookie-parser' // cookie parser middleware
-import mongoose from 'mongoose' // MongoDB object modeling tool
 import dotenv from 'dotenv' // dotenv configuration
 
 import routes from './routes/index' // routes for our application
@@ -19,7 +18,6 @@ dotenv.config() // configure dotenv at the beginning of the project
 
 const app = express()
 
-app.use(express.urlencoded({ extended: true }))
 
 app.use(mongoSanitize())
 
@@ -32,8 +30,9 @@ app.use(cors({
 }))
 
 app.use(express.json({ limit: '10kb' }))
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }))
+// app.use(bodyParser.json())
+// app.use(bodyParser.urlencoded({ extended: true }))
 app.use(helmet())
 
 if (process.env.NODE_ENV === 'development') {

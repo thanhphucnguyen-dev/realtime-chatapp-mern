@@ -1,156 +1,193 @@
 import jwt from 'jsonwebtoken'
 import otpGenerator from 'otp-generator'
+import { sendEmail } from '~/services/mailer'
 import crypto from 'crypto'
 
-import User from '~/models/user.model'
 import filterObj from '~/utils/FilterObj'
-import { sendEmail as mailService } from '~/services/mailer'
 
+// import { sendEmail as mailService } from '~/services/mailer'
+
+// Model
+import User from '~/models/user.model'
+const otp = require('~/Templates/Mail/otp')
+import resetPassword from '~/Templates/Mail/resetPassword'
 import { promisify } from 'util'
+
+// this function will return you jwt token
+const signToken = (userId) => jwt.sign({ userId }, process.env.JWT_SECRET)
 
 const authController = {
 
-  signToken: (userId) => jwt.sign({ userId }, process.env.JWT_SECRET),
-
-  // Signup => register - sendOTP - verifyOTP
-  // https://api.zenya.com/auth/register
-
   // Register New User
   register: async (req, res, next) => {
-    const { firstName, lastName, email, password } = req.body
+    try {
+      const { firstName, lastName, email, password } = req.body
+      const filteredBody = filterObj(req.body, 'firstName', 'lastName', 'email', 'password')
 
-    const filteredBody = filterObj(req.body, 'firstName', 'lastName', 'password', 'email')
+      // Check if a verified user with given email exists
+      const existing_user = await User.findOne({ email: email })
 
-    // Check if a verified user with given email exists
-    const existing_user = await User.findOne({ email: email })
+      if (existing_user && existing_user.verified) {
+        // user with this email already exists, please login
+        return res.status(400).json({
+          status: 'error',
+          message: 'Email already in use, Please login.'
+        })
+      } else if (existing_user) {
+        // if not verified than update prev one
+        await User.findOneAndUpdate({ email: email }, filteredBody, {
+          new: true,
+          validateModifiedOnly: true
+        })
 
-    if (existing_user && existing_user.verified) {
-      res.status(400).json({
-        status: 'error',
-        message: 'Email already in use, Please login.'
-      })
-    } else if (existing_user) {
-      await User.findOneAndUpdate({ email: email }, filteredBody, { new: true, validateModifiedOnly: true })
+        // generate an otp and send to email
+        req.userId = existing_user._id
+        next()
+      } else {
+        // if user is not created before than create a new one
+        const new_user = await User.create(filteredBody)
 
-      // Generate an otp and send to email
-      req.userId = existing_user._id
-      res.status(200).json({
-        status: 'success',
-        message: 'User updated successfully.'
-      })
-      next()
-
-    } else {
-    // If user record is not available in DB
-      const new_user = await User.create(filteredBody)
-      // Generate an otp and send to email
-      req.userId = new_user._id
-      res.status(200).json({
-        status: 'success',
-        message: 'User created successfully.'
-      })
-      next()
+        // generate an otp and send to email
+        req.userId = new_user._id
+        next()
+      }
+    } catch (error) {
+      next(error)
     }
   },
 
+
   // Send OTP
-  sendOTP: async (req, res) => {
-    const { userId } = req
-    const new_otp = otpGenerator.generate(6, {
-      lowerCaseAlphabets: false,
-      upperCaseAlphabets: false,
-      specialChars: false
-    })
-    // Verify OTP
-    const otp_expiry_time = Date.now() + 10 * 60 * 1000 // 10 Mins after otp is sent
+  sendOTP: async (req, res, next) => {
+    try {
+      const { userId } = req
 
-    await User.findByIdAndUpdate(userId, {
-      otp: new_otp,
-      otp_expiry_time
-    })
+      const new_otp = otpGenerator.generate(6, {
+        upperCaseAlphabets: false,
+        specialChars: false,
+        lowerCaseAlphabets: false
+      })
 
-    // Send Mail
-    mailService.sendEmail({
-      from: 'contact@zenya.com',
-      to: 'example@gmail.com',
-      subject: 'OTP for Zenya',
-      text: `Your  OTP is ${new_otp}. This is valid for 10 minutes.`
-    })
+      const otp_expiry_time = Date.now() + 10 * 60 * 1000
 
-    res.status(200).json({
-      status: 'success',
-      message: 'OTP Sent Successfully!'
-    })
+      const user = await User.findByIdAndUpdate(userId, {
+        otp_expiry_time: otp_expiry_time
+      })
+
+      if (!user) {
+        return res.status(404).json({
+          status: 'error',
+          message: 'User not found when sending OTP.'
+        })
+      }
+
+      user.otp = new_otp.toString()
+      await user.save({ new: true, validateModifiedOnly: true })
+
+      // TODO send mail
+      await sendEmail({
+        from: 'thanhphucnguyen54@gmail.com',
+        to: user.email,
+        subject: 'Verification OTP',
+        html: otp(user.firstName, new_otp),
+        attachments: []
+      })
+
+      res.status(200).json({
+        status: 'success',
+        message: 'OTP sent successfully!'
+      })
+    } catch (error) {
+      next(error)
+    }
   },
 
-  // verifyOTP
-  verifyOTP: async (req, res) => {
-  // Verify OTP and update user record accordingly
-    const { email, otp } = req.body
 
+  // verifyOTP
+  verifyOTP: async (req, res, next) => {
+    // verify otp and update user accordingly
+    const { email, otp } = req.body
     const user = await User.findOne({
       email,
       otp_expiry_time: { $gt: Date.now() }
     })
 
+
     if (!user) {
-      res.status(400).json({
+      return res.status(400).json({
         status: 'error',
-        message: 'Email is Invalid or OTP expired'
+        message: 'Email is invalid or OTP expired'
       })
     }
 
-    if (!await user.correctOTP(otp, user.otp)) {
+    if (user.verified) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Email is already verified'
+      })
+    }
+
+    if (!(await user.correctOTP(otp, user.otp))) {
       res.status(400).json({
         status: 'error',
         message: 'OTP is incorrect'
       })
+
+      return
     }
 
     // OTP is correct
+
     user.verified = true
     user.otp = undefined
-
     await user.save({ new: true, validateModifiedOnly: true })
 
     const token = signToken(user._id)
 
     res.status(200).json({
       status: 'success',
-      message: 'OTP verified successfully!',
-      token
+      message: 'OTP verified Successfully!',
+      token,
+      user_id: user._id
     })
-
   },
 
+
   // Login User
-  login: async (req, res) => {
+  login: async (req, res, next) => {
     const { email, password } = req.body
 
     if ( !email || !password ) {
-      res.status(400).json({
+      return res.status(400).json({
         status: 'error',
         message: 'Both email and password are required.'
       })
     }
 
-    const userDoc = await User.findOne({ email: email }).select('+password')
+    const user = await User.findOne({ email: email }).select('+password')
 
-    if (!userDoc || !(await userDoc.correctPassword(password, userDoc.password))) {
-      res.status(400).json({
+    if (!user || !user.password) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Incorrect password'
+      })
+    }
+
+    if (!user || !(await user.correctPassword(password, user.password))) {
+      return res.status(400).json({
         status: 'error',
         message: 'Email or password is incorrect.'
       })
     }
 
-    const token = signToken(userDoc._id)
+    const token = signToken(user._id)
 
-    res.status(200).json({
+    return res.status(200).json({
       status: 'success',
       message: 'Logged in successfully!',
-      token
+      token,
+      user_id: user._id
     })
-
   },
 
   // protect
@@ -201,22 +238,29 @@ const authController = {
   // Types of routes => Protected (Only logged in users an access these) & Unprotected
 
   // forgotPassword
-  forgotPassword: async (req, res) => {
-  // 1) Get users email
+  forgotPassword: async (req, res, next) => {
+  // 1) Get users based on POSTed email
     const user = await User.findOne({ email: req.body.email })
     if (!user) {
-      res.status(400).json({
+      return res.status(404).json({
         status: 'error',
         message: 'There is no user with given email address.'
       })
-      return
     }
 
     // 2) Generate the random reset token
     const resetToken = user.createPasswordResetToken()
-    const resetURL = `https://zenya.com/auth/reset-password?code=${resetToken}`
+    console.log('🔑 RESET TOKEN:', resetToken)
+
+    await user.save({ validateBeforeSave: false })
+
+    // 3) Send it to user's email
     try {
-    // TODO => Send Email With Reset URL
+      // const resetURL = `https://zenya.com/auth/reset-password?code=${resetToken}`
+      const resetURL = `http://localhost:3000/auth/new-password?token=${resetToken}`
+      // TODO => Send Email with this Reset URL to user's email address
+      console.log(resetURL)
+
       res.status(200).json({
         status: 'success',
         message: 'Reset Password link sent to Email!'
@@ -227,18 +271,16 @@ const authController = {
 
       await user.save({ validateBeforeSave: false })
 
-      res.status(500).json({
-        status: 'error',
+      return res.status(500).json({
         message: 'There was an error sending the email, Please try again later.'
       })
-
     }
   },
 
   // resetPassword
-  resetPassword: async (req, res) => {
+  resetPassword: async (req, res, next) => {
   //1) Get user based on  token
-    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
+    const hashedToken = crypto.createHash('sha256').update(req.body.token).digest('hex')
 
     const user = await User.findOne({
       passwordResetToken: hashedToken,
@@ -247,11 +289,10 @@ const authController = {
 
     // 2) If token has expired or submission is out of time window
     if (!user) {
-      res.status(400).json({
+      return res.status(400).json({
         status: 'error',
         message: 'Token is Invalid or Expired.'
       })
-      return
     }
 
     // 3) Update users password and set resetToken & expiry to undifine

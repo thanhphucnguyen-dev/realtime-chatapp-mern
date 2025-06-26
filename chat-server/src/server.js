@@ -32,7 +32,7 @@ const START_SERVER = () => {
 (async () => {
   try {
     console.log('1. Connecting to MongoDB...')
-    const connect = await CONNECT_DB()
+    await CONNECT_DB()
     console.log('2. Connected to MongoDB.')
     START_SERVER()
   } catch (error) {

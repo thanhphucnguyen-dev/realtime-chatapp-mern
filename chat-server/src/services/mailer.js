@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+
 //SendGrid (Của Twilio – phổ biến)
 import { env } from '~/config/environment'
 import sgMail from '@sendgrid/mail'
@@ -6,18 +6,18 @@ import sgMail from '@sendgrid/mail'
 sgMail.setApiKey(env.SG_KEY)
 
 const sendSGMail = async ({
-  recipient,
+  to,
   sender,
   subject,
   html,
-  text,
-  attachments
+  attachments,
+  text
 }) => {
   try {
-    const from = sender || 'contact@zenya.com'
+    const from = sender || 'thanhphucnguyen54@gmail.com'
 
     const msg = {
-      to: recipient, // email of recipient
+      to: to, // email of recipient
       from: from, // this will be our verified sender
       subject: subject,
       html: html,
@@ -26,18 +26,20 @@ const sendSGMail = async ({
     }
 
     return sgMail.send(msg)
+    // console.log(`Email sent to ${recipient}`)
 
   } catch (error) {
-    console.log(error)
+    // console.error('Failed to send email:', error?.response?.body || error)
+    throw error
   }
 }
 
 
 export const sendEmail = async ( args ) => {
   // ẩn việc gửi mail trong môi trường dev
-  if ( env.NODE_ENV === 'development') {
-    return new Promise.resolve()
-  } else {
-    return sendSGMail(args)
+  if ( env.NODE_ENV === 'production') {
+    // console.log('[DEV MODE] Email sending skipped.')
+    return Promise.resolve()
   }
+  return sendSGMail(args)
 }
