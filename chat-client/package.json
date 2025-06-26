@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "author": "thanhphucnguyen",
+  "author": "thanhphucnguyen1810",
   "description": "Realtime Chat App",
   "engines": {
     "node": ">=18.x"
@@ -25,6 +25,7 @@
     "@mui/material": "^5.15.17",
     "@reduxjs/toolkit": "^2.8.1",
     "@testing-library/dom": "^10.4.0",
+    "axios": "^1.10.0",
     "emoji-mart": "^5.5.1",
     "framer-motion": "^10.16.1",
     "i18next": "^25.1.2",
